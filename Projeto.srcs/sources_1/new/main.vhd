@@ -54,7 +54,8 @@ architecture rtl of SS_controller is
     constant SS5_valor : integer range 0 to 9 := 5;
     constant SS6_valor : integer range 0 to 9 := 6;
     constant SS7_valor : integer range 0 to 9 := 7;
-    -- Constantes que definem o valor dos catodos no 7 display sete segmentos para cada digito
+	
+    -- Constantes que definem o valor dos catodos para cada digito
     constant digito0 : std_logic_vector (6 downto 0) := "1000000";
     constant digito1 : std_logic_vector (6 downto 0) := "1111001";
     constant digito2 : std_logic_vector (6 downto 0) := "0100100";
@@ -65,13 +66,16 @@ architecture rtl of SS_controller is
     constant digito7 : std_logic_vector (6 downto 0) := "1111000";
     constant digito8 : std_logic_vector (6 downto 0) := "0000000";
     constant digito9 : std_logic_vector (6 downto 0) := "0010000";
-    -- Variavel utilizada na base de tempo
-    variable cnt : integer := 0;
+	
+    -- Contador do tempo
+    signal cnt : integer := 0;
     variable valorAtual : integer range 0 to 9 := 0;
+	
     -- Display aceso atual
-    variable displayAtual : integer range 0 to 7 := 0;
+    signal displayAtual : integer range 0 to 7 := 0;
+	
 begin
-    
+
     an  <=  "11111110" when displayAtual = 0 else
             "11111101" when displayAtual = 1 else
             "11111011" when displayAtual = 2 else
@@ -97,7 +101,6 @@ begin
         if (rising_edge(clk)) then
             if (cnt=((fclk/f7s)/8)) then
                 cnt := 0;
-               
                 case displayAtual is
                     when 0 => valorAtual := SS0_valor;
                     when 1 => valorAtual := SS1_valor;
@@ -107,8 +110,8 @@ begin
                     when 5 => valorAtual := SS5_valor;
                     when 6 => valorAtual := SS6_valor;
                     when 7 => valorAtual := SS7_valor;
-                  end case;
-                 displayAtual := displayAtual + 1;
+                end case;
+                displayAtual := displayAtual + 1;
             else
                 cnt := cnt + 1;
             end if;
